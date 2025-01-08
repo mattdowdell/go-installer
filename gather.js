@@ -63,7 +63,7 @@ function getBinName(pkg) {
 
   let name = parts[parts.length - 1];
   if (/v\d+/.test(name)) {
-    name = parts[parts.length - 1];
+    name = parts[parts.length - 2];
   }
 
   return name;
