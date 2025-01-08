@@ -29,8 +29,8 @@ module.exports = async ({ core, exec }) => {
     );
 
     console.debug("result:", result);
-    console.debug("code:", result.code);
-    if (result.code == 0) {
+    console.debug("code:", result.exitCode);
+    if (result.exitCode == 0) {
       const data = JSON.parse(result.stdout);
       console.log("data:", data);
       // google.golang.org returns success when not in the module root
