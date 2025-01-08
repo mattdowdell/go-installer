@@ -39,7 +39,7 @@ module.exports = async ({ core, exec }) => {
       }
 
       const version = data.Versions[data.Versions.length - 1];
-      console.log("version": version);
+      console.log("version:", version);
 
       core.setOutput("version", version);
       core.setOutput("key", makeKey({ core, name, version }));
