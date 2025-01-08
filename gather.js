@@ -47,6 +47,9 @@ module.exports = async ({ core, exec }) => {
   core.setFailed("failed to identify go module");
 };
 
+/**
+ * Build the key to use for cache lookups.
+ */
 function makeKey({ core, name, version }) {
   return ["go-install", core.platform, core.arch, name, version].join("-");
 }
