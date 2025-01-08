@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  size:
+    name: Size
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Size
+        uses: mattdowdell/pr-sizer@v0.1.0
+
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+
+      - name: Install latest (github.com)
+        id: install-latest-1
+        uses: ./
+          package: github.com/google/wire/cmd/wire
+          # version defaults to latest
+
+      - name: Check install latest (github.com)
+        run: |
+          echo cached=${CACHED}
+          echo version=${VERSION}
+
+          if [ "${NAME}" != "wire" ]; then
+            echo "name != 'wire'"
+            exit 1
+          fi
+        env:
+          CACHED: ${{ steps.install-latest-1.outputs.cached }}
+          NAME: ${{ steps.install-latest-1.outputs.name }}
+          VERSION: ${{ steps.install-latest-1.outputs.version }}
+
+      - name: Install latest (google.golang.org)
+        id: install-latest-2
+        uses: ./
+          package: google.golang.org/protobuf/cmd/protoc-gen-go
+          # version defaults to latest
+
+      - name: Check install latest (google.golang.org)
+        run: |
+          echo cached=${CACHED}
+          echo version=${VERSION}
+
+          if [ "${NAME}" != "protoc-gen-go" ]; then
+            echo "name != 'protoc-gen-go'"
+            exit 1
+          fi
+        env:
+          CACHED: ${{ steps.install-latest-2.outputs.cached }}
+          NAME: ${{ steps.install-latest-2.outputs.name }}
+          VERSION: ${{ steps.install-latest-2.outputs.version }}
+
+      - name: Install latest (v2)
+        id: install-latest-3
+        uses: ./
+          package: github.com/vektra/mockery/v2
+          # version defaults to latest
+
+      - name: Check install latest (v2)
+        run: |
+          echo cached=${CACHED}
+          echo version=${VERSION}
+
+          if [ "${NAME}" != "mockery" ]; then
+            echo "name != 'mockery'"
+            exit 1
+          fi
+        env:
+          CACHED: ${{ steps.install-latest-3.outputs.cached }}
+          NAME: ${{ steps.install-latest-3.outputs.name }}
+          VERSION: ${{ steps.install-latest-3.outputs.version }}
+
+      - name: Install version
+        id: install-version
+        uses: ./
+          package: mvdan.cc/gofumpt
+          version: v0.7.0
+
+      - name: Check install version
+        run: |
+          echo cached=${CACHED}
+
+          if [ "${NAME}" != "gofumpt" ]; then
+            echo "name != 'gofumpt'"
+            exit 1
+          fi
+
+          if [ "${VERSION}" != "v0.7.0" ]; then
+            echo "version != 'v0.7.0'"
+            exit 1
+          fi
+        env:
+          CACHED: ${{ steps.install-version.outputs.cached }}
+          NAME: ${{ steps.install-version.outputs.name }}
+          VERSION: ${{ steps.install-version.outputs.version }}
