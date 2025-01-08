@@ -19,7 +19,9 @@ module.exports = async ({core, exec}) => {
 		return
 	}
 
-	const mod = getModules(pkg).find(mod => {
+	const paths = getModules(pkg);
+
+	for (const mod of getModules()) {
 		const result = await exec.getExecOutput(
 			'go',
 			['list', '-m', '-versions', '-mod=readonly', '-json',  mod],
@@ -30,7 +32,7 @@ module.exports = async ({core, exec}) => {
 			const data = JSON.parse(result.stdout);
 			// google.golang.org returns success when not in the module root
 			if (!data.hasOwnProperty('Versions')) {
-				return false;
+				continue;
 			}
 
 			const version = data.Versions[data.Versions.length - 1];
@@ -38,16 +40,11 @@ module.exports = async ({core, exec}) => {
 			core.setOutput('version', version);
 			core.setOutput('key', makeKey({core, name, version}));
 
-			return true;
+			return;
 		}
-
-		return false;
-	});
-
-	if (mod === undefined) {
-		core.setFailed('failed to identify go module');
-		return
 	}
+
+	core.setFailed('failed to identify go module');
 }
 
 function makeKey({ core, name, version }) {
