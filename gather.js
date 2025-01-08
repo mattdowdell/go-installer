@@ -28,14 +28,17 @@ module.exports = async ({ core, exec }) => {
       { ignoreReturnCode: true },
     );
 
+    console.debug(result.code);
     if (result.code == 0) {
       const data = JSON.parse(result.stdout);
+      console.log(data);
       // google.golang.org returns success when not in the module root
       if (!Object.hasOwn(data, "Versions")) {
         continue;
       }
 
       const version = data.Versions[data.Versions.length - 1];
+      console.log(version);
 
       core.setOutput("version", version);
       core.setOutput("key", makeKey({ core, name, version }));
