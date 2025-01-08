@@ -34,9 +34,9 @@ runs:
       uses: actions/github-script@v7
       with:
         script: |
-          const os = require('os')
-          const script = require('${{ github.action_path }}/gather.js')
-          await script({core, exec, os})
+          const os = require('os');
+          const script = require('${{ github.action_path }}/gather.js');
+          await script({core, exec, os});
       env:
         package: ${{ inputs.package }}
         version: ${{ inputs.version }}
@@ -53,8 +53,8 @@ runs:
       if: steps.cache.outputs.cache-hit != 'true'
       with:
         script: |
-          const script = require('${{ github.action_path }}/install.js')
-          await script({exec})
+          const script = require('${{ github.action_path }}/install.js');
+          await script({exec});
       env:
         package: ${{ inputs.package }}
         version: ${{ steps.gather.outputs.version }}

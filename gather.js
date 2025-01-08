@@ -50,8 +50,11 @@ module.exports = async ({ core, exec, os }) => {
 
 /**
  * Build the key to use for cache lookups.
+ *
+ * Ideally, this would use core instead of os, but that requires @actions/core v1.11.0.
+ * actions/github-script@v7.0.1 provides @actions/core v1.10.1, which does provide this info.
  */
-function makeKey({ name, version }) {
+function makeKey({ os, name, version }) {
   return ["go-install", os.platform(), os.arch(), name, version].join("-");
 }
 
