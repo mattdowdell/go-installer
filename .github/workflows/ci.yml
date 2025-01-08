@@ -55,10 +55,11 @@ jobs:
       - name: Check install latest (github.com)
         run: |
           echo cached=${CACHED}
+          echo name=${NAME}
           echo version=${VERSION}
 
           if [ "${NAME}" != "wire" ]; then
-            echo "name != 'wire'"
+            echo "::error name != 'wire'"
             exit 1
           fi
         env:
@@ -76,10 +77,11 @@ jobs:
       - name: Check install latest (google.golang.org)
         run: |
           echo cached=${CACHED}
+          echo name=${NAME}
           echo version=${VERSION}
 
           if [ "${NAME}" != "protoc-gen-go" ]; then
-            echo "name != 'protoc-gen-go'"
+            echo "::error name != 'protoc-gen-go'"
             exit 1
           fi
         env:
@@ -97,10 +99,11 @@ jobs:
       - name: Check install latest (v2)
         run: |
           echo cached=${CACHED}
+          echo name=${NAME}
           echo version=${VERSION}
 
           if [ "${NAME}" != "mockery" ]; then
-            echo "name != 'mockery'"
+            echo "::error name != 'mockery'"
             exit 1
           fi
         env:
@@ -118,9 +121,11 @@ jobs:
       - name: Check install version
         run: |
           echo cached=${CACHED}
+          echo name=${NAME}
+          echo version=${VERSION}
 
           if [ "${NAME}" != "gofumpt" ]; then
-            echo "name != 'gofumpt'"
+            echo "::error name != 'gofumpt'"
             exit 1
           fi
 
