@@ -7,7 +7,7 @@
  * - The version, converting 'latest' to an actual version to support cache invalidation.
  * - The cache key based on the name, version and runner.
  */
-module.exports = async ({ core, exec }) => {
+module.exports = async ({ core, exec, os }) => {
   const pkg = process.env.package;
 
   const name = getBinName(pkg);
@@ -16,7 +16,7 @@ module.exports = async ({ core, exec }) => {
   const version = process.env.version;
   if (version != "latest") {
     core.setOutput("version", version);
-    core.setOutput("key", makeKey({ core, name, version }));
+    core.setOutput("key", makeKey({ os, name, version }));
 
     return;
   }
@@ -39,7 +39,7 @@ module.exports = async ({ core, exec }) => {
       const version = data.Versions[data.Versions.length - 1];
 
       core.setOutput("version", version);
-      core.setOutput("key", makeKey({ core, name, version }));
+      core.setOutput("key", makeKey({ os, name, version }));
 
       return;
     }
@@ -51,13 +51,8 @@ module.exports = async ({ core, exec }) => {
 /**
  * Build the key to use for cache lookups.
  */
-function makeKey({ core, name, version }) {
-  const details = core.getDetails();
-  console.log('core:', details);
-  console.log('platform:', details.platform);
-  console.log('arch:', details.arch);
-
-  return ["go-install", details.platform, details.arch, name, version].join("-");
+function makeKey({ name, version }) {
+  return ["go-install", os.platform(), os.arch(), name, version].join("-");
 }
 
 /**
