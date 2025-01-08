@@ -21,7 +21,7 @@ module.exports = async ({ core, exec }) => {
     return;
   }
 
-  for (const mod of getModules()) {
+  for (const mod of getModules(pkg)) {
     const result = await exec.getExecOutput(
       "go",
       ["list", "-m", "-versions", "-mod=readonly", "-json", mod],
