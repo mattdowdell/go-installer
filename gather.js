@@ -52,6 +52,10 @@ module.exports = async ({ core, exec }) => {
  * Build the key to use for cache lookups.
  */
 function makeKey({ core, name, version }) {
+  console.log('core:', core);
+  console.log('platform:', core.platform);
+  console.log('arch:', core.arch);
+
   return ["go-install", core.platform, core.arch, name, version].join("-");
 }
 
