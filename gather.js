@@ -55,7 +55,7 @@ module.exports = async ({ core, exec, os }) => {
  * actions/github-script@v7.0.1 provides @actions/core v1.10.1, which does provide this info.
  */
 function makeKey({ os, name, version }) {
-  return ["go-install", os.platform(), os.arch(), name, version].join("-");
+  return ["go-installer", os.platform(), os.arch(), name, version].join("-");
 }
 
 /**
