@@ -64,8 +64,8 @@ After running `go mod tidy`, the tool versions will be tracked in `go.mod`. The
 versions can then be upgraded manually or with your chosen dependency management
 solution, e.g. [Dependabot] or [Renovate].
 
-[Dependabot]: #todo
-[Renovate]: #todo
+[Dependabot]: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates
+[Renovate]: https://docs.renovatebot.com/
 
 ## Outputs
 

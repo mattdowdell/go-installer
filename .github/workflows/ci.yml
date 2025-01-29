@@ -137,3 +137,30 @@ jobs:
           CACHED: ${{ steps.install-version.outputs.cached }}
           NAME: ${{ steps.install-version.outputs.name }}
           VERSION: ${{ steps.install-version.outputs.version }}
+
+      - name: Install version-file
+        id: install-version-file
+        uses: ./
+        with:
+          package: github.com/daixiang0/gci
+          version-file: testdata/go.mod
+
+      - name: Check install version-file
+        run: |
+          echo cached=${CACHED}
+          echo name=${NAME}
+          echo version=${VERSION}
+
+          if [ "${NAME}" != "gci" ]; then
+            echo "::error name != 'gci'"
+            exit 1
+          fi
+
+          if [ "${VERSION}" != "v0.13.5" ]; then
+            echo "version != 'v0.13.5'"
+            exit 1
+          fi
+        env:
+          CACHED: ${{ steps.install-version.outputs.cached }}
+          NAME: ${{ steps.install-version.outputs.name }}
+          VERSION: ${{ steps.install-version.outputs.version }}
