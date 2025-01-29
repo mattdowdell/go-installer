@@ -130,7 +130,7 @@ jobs:
           fi
 
           if [ "${VERSION}" != "v0.7.0" ]; then
-            echo "version != 'v0.7.0'"
+            echo "::error version != 'v0.7.0'"
             exit 1
           fi
         env:
@@ -157,7 +157,7 @@ jobs:
           fi
 
           if [ "${VERSION}" != "v0.13.4" ]; then
-            echo "version != 'v0.13.4'"
+            echo "::error version != 'v0.13.4'"
             exit 1
           fi
         env:
