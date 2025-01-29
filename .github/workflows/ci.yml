@@ -161,6 +161,6 @@ jobs:
             exit 1
           fi
         env:
-          CACHED: ${{ steps.install-version.outputs.cached }}
-          NAME: ${{ steps.install-version.outputs.name }}
-          VERSION: ${{ steps.install-version.outputs.version }}
+          CACHED: ${{ steps.install-version-file.outputs.cached }}
+          NAME: ${{ steps.install-version-file.outputs.name }}
+          VERSION: ${{ steps.install-version-file.outputs.version }}
