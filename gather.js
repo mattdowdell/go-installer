@@ -82,7 +82,7 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
     ["list", "-m", "-json", "all"],
     { cwd: path.dirname(versionFile) },
   );
-  const data = JSON.parse(result.stdout);
+  const data = JSON.parse("[" + result.stdout.replaceAll("}\n{", "},\n{") + "]");
 
   return new Map(data.map(d => [d.Path, d.Version]));
 }
