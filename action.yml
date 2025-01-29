@@ -14,6 +14,10 @@ inputs:
     description: 'The Go package version to install.'
     required: false
     default: 'latest'
+  version-file:
+    description: 'The go.mod file to lookup the version from.'
+    required: false
+    default: ''
 
 outputs:
   cached:
@@ -35,11 +39,14 @@ runs:
       with:
         script: |
           const os = require('os');
+          const path = require('path');
+
           const script = require('${{ github.action_path }}/gather.js');
-          await script({core, exec, os});
+          await script({ core, exec, os, path });
       env:
         package: ${{ inputs.package }}
         version: ${{ inputs.version }}
+        version_file: ${{ inputs.version-file }}
 
     - name: Cache
       uses: actions/cache@v4
@@ -54,7 +61,7 @@ runs:
       with:
         script: |
           const script = require('${{ github.action_path }}/install.js');
-          await script({exec});
+          await script({ exec });
       env:
         package: ${{ inputs.package }}
         version: ${{ steps.gather.outputs.version }}

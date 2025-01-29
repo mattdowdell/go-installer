@@ -7,7 +7,7 @@
  * - The version, converting 'latest' to an actual version to support cache invalidation.
  * - The cache key based on the name, version and runner.
  */
-module.exports = async ({ core, exec, os }) => {
+module.exports = async ({ core, exec, os, path }) => {
   const pkg = process.env.package;
 
   const name = getBinName(pkg);
@@ -20,6 +20,9 @@ module.exports = async ({ core, exec, os }) => {
 
     return;
   }
+
+  const versionFile = process.env.version_file;
+  const versions = parseVersionFile({ core, exec, os, versionFile });
 
   for (const mod of getModules(pkg)) {
     const result = await exec.getExecOutput(
@@ -36,7 +39,10 @@ module.exports = async ({ core, exec, os }) => {
         continue;
       }
 
-      const version = data.Versions[data.Versions.length - 1];
+      let version = data.Versions[data.Versions.length - 1];
+      if (versions.has(pkg)) {
+        version = versions.get(pkg);
+      }
 
       core.setOutput("version", version);
       core.setOutput("key", makeKey({ os, name, version }));
@@ -47,6 +53,32 @@ module.exports = async ({ core, exec, os }) => {
 
   core.setFailed("failed to identify go module");
 };
+
+/**
+ * parseVersionFile converts a go.mod file to a map of Go modules and versions.
+ */
+function parseVersionFile({ core, exec, path, versionFile }) {
+  if (versionFile == "") {
+    return new Map();
+  }
+
+  if (path.basename(versionFile) != "go.mod") {
+    core.setFailed(`version-file is not a go.mod file: ${versionFile}`);
+    return
+  }
+
+  if (!path.existsSync(versionFile)) {
+    core.setFailed(`version-file does not exist: ${versionFile}`);
+    return;
+  }
+
+  const modDir = path.dirname(versionFile);
+
+  const result = await exec.getExecOutput("go", ["list", "-m", "-json", "all"]);
+  const data = JSON.parse(result.stdout);
+
+  return new Map(data.map(d => [d.Path, d.Version]));
+}
 
 /**
  * Build the key to use for cache lookups.
