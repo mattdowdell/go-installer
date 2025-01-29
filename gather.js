@@ -7,7 +7,7 @@
  * - The version, converting 'latest' to an actual version to support cache invalidation.
  * - The cache key based on the name, version and runner.
  */
-module.exports = async ({ core, exec, os, path }) => {
+module.exports = async ({ core, exec, fs, os, path }) => {
   const pkg = process.env.package;
 
   const name = getBinName(pkg);
@@ -22,7 +22,7 @@ module.exports = async ({ core, exec, os, path }) => {
   }
 
   const versionFile = process.env.version_file;
-  const versions = await parseVersionFile({ core, exec, path, versionFile });
+  const versions = await parseVersionFile({ core, exec, fs, path, versionFile });
 
   for (const mod of getModules(pkg)) {
     const result = await exec.getExecOutput(
@@ -72,7 +72,7 @@ async function parseVersionFile({ core, exec, path, versionFile }) {
     return
   }
 
-  if (!path.existsSync(versionFile)) {
+  if (!fs.existsSync(versionFile)) {
     core.setFailed(`version-file does not exist: ${versionFile}`);
     return;
   }
