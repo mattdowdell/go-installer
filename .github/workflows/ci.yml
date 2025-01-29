@@ -156,8 +156,8 @@ jobs:
             exit 1
           fi
 
-          if [ "${VERSION}" != "v0.13.5" ]; then
-            echo "version != 'v0.13.5'"
+          if [ "${VERSION}" != "v0.13.4" ]; then
+            echo "version != 'v0.13.4'"
             exit 1
           fi
         env:

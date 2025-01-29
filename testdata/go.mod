@@ -2,7 +2,7 @@ module github.com/mattdowdell/go-installer/testdata
 
 go 1.23.4
 
-require github.com/daixiang0/gci v0.13.5
+require github.com/daixiang0/gci v0.13.4
 
 require (
 	github.com/hexops/gotextdiff v1.0.3 // indirect
