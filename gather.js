@@ -22,7 +22,7 @@ module.exports = async ({ core, exec, os, path }) => {
   }
 
   const versionFile = process.env.version_file;
-  const versions = await parseVersionFile({ core, exec, os, versionFile });
+  const versions = await parseVersionFile({ core, exec, path, versionFile });
 
   for (const mod of getModules(pkg)) {
     const result = await exec.getExecOutput(
