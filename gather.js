@@ -22,7 +22,7 @@ module.exports = async ({ core, exec, os, path }) => {
   }
 
   const versionFile = process.env.version_file;
-  const versions = parseVersionFile({ core, exec, os, versionFile });
+  const versions = await parseVersionFile({ core, exec, os, versionFile });
 
   for (const mod of getModules(pkg)) {
     const result = await exec.getExecOutput(
@@ -57,7 +57,7 @@ module.exports = async ({ core, exec, os, path }) => {
 /**
  * parseVersionFile converts a go.mod file to a map of Go modules and versions.
  */
-function parseVersionFile({ core, exec, path, versionFile }) {
+async function parseVersionFile({ core, exec, path, versionFile }) {
   if (versionFile == "") {
     return new Map();
   }
