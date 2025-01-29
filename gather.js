@@ -62,7 +62,7 @@ module.exports = async ({ core, exec, fs, os, path }) => {
 /**
  * parseVersionFile converts a go.mod file to a map of Go modules and versions.
  */
-async function parseVersionFile({ core, exec, path, versionFile }) {
+async function parseVersionFile({ core, exec, fs, path, versionFile }) {
   if (versionFile == "") {
     return new Map();
   }
