@@ -51,6 +51,9 @@ alongside other dependencies in a `go.mod` file. For example:
 ```go
 // tools.go
 
+//go:build tools
+// +build tools
+
 package main
 
 import (
