@@ -164,3 +164,10 @@ jobs:
           CACHED: ${{ steps.install-version-file.outputs.cached }}
           NAME: ${{ steps.install-version-file.outputs.name }}
           VERSION: ${{ steps.install-version-file.outputs.version }}
+
+      - name: Install version-file missing
+        id: install-version-file missing
+        uses: ./
+        with:
+          package: mvdan.cc/gofumpt
+          version-file: testdata/go.mod
