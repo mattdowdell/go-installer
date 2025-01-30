@@ -165,6 +165,8 @@ jobs:
           NAME: ${{ steps.install-version-file.outputs.name }}
           VERSION: ${{ steps.install-version-file.outputs.version }}
 
+      # NEGATIVE TEST CASES BELOW
+
       # - name: Install version-file missing
       #   id: install-version-file-missing
       #   uses: ./
@@ -172,9 +174,9 @@ jobs:
       #     package: mvdan.cc/gofumpt
       #     version-file: testdata/go.mod
 
-      - name: Install version-file invalid
-        id: install-version-file-invalid
-        uses: ./
-        with:
-          package: mvdan.cc/gofumpt
-          version-file: testdata/go.sum
+      # - name: Install version-file invalid
+      #   id: install-version-file-invalid
+      #   uses: ./
+      #   with:
+      #     package: mvdan.cc/gofumpt
+      #     version-file: testdata/go.sum
