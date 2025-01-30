@@ -7,7 +7,7 @@
  * - The version, converting 'latest' to an actual version to support cache invalidation.
  * - The cache key based on the name, version and runner.
  */
-module.exports = async ({ core, exec, os }) => {
+module.exports = async ({ core, exec, fs, os, path }) => {
   const pkg = process.env.package;
 
   const name = getBinName(pkg);
@@ -18,6 +18,16 @@ module.exports = async ({ core, exec, os }) => {
     core.setOutput("version", version);
     core.setOutput("key", makeKey({ os, name, version }));
 
+    return;
+  }
+
+  const versionFile = process.env.version_file;
+  let versions;
+
+  try {
+    versions = await parseVersionFile({ core, exec, fs, path, versionFile });
+  } catch(e) {
+    core.setFailed(e);
     return;
   }
 
@@ -36,7 +46,15 @@ module.exports = async ({ core, exec, os }) => {
         continue;
       }
 
-      const version = data.Versions[data.Versions.length - 1];
+      if (versionFile != "" && !versions.has(mod)) {
+        core.setFailed(`version-file ${versionFile} is missing package: ${mod}`);
+        return;
+      }
+
+      let version = data.Versions[data.Versions.length - 1];
+      if (versions.has(mod)) {
+        version = versions.get(mod);
+      }
 
       core.setOutput("version", version);
       core.setOutput("key", makeKey({ os, name, version }));
@@ -47,6 +65,33 @@ module.exports = async ({ core, exec, os }) => {
 
   core.setFailed("failed to identify go module");
 };
+
+/**
+ * parseVersionFile converts a go.mod file to a map of Go modules and versions.
+ */
+async function parseVersionFile({ core, exec, fs, path, versionFile }) {
+  if (versionFile == "") {
+    return new Map();
+  }
+
+  if (path.basename(versionFile) != "go.mod") {
+    throw new Error(`version-file is not a go.mod file: ${versionFile}`);
+
+  }
+
+  if (!fs.existsSync(versionFile)) {
+    throw new Error(`version-file does not exist: ${versionFile}`);
+  }
+
+  const result = await exec.getExecOutput(
+    "go",
+    ["list", "-mod=readonly", "-m", "-json", "all"],
+    { cwd: path.dirname(versionFile) },
+  );
+  const data = JSON.parse("[" + result.stdout.replaceAll("}\n{", "},\n{") + "]");
+
+  return new Map(data.map(d => [d.Path, d.Version]));
+}
 
 /**
  * Build the key to use for cache lookups.
