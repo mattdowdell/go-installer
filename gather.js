@@ -22,7 +22,13 @@ module.exports = async ({ core, exec, fs, os, path }) => {
   }
 
   const versionFile = process.env.version_file;
-  const versions = await parseVersionFile({ core, exec, fs, path, versionFile });
+
+  try {
+    const versions = await parseVersionFile({ core, exec, fs, path, versionFile });
+  } catch(e) {
+    core.setFailed(e);
+    return;
+  }
 
   for (const mod of getModules(pkg)) {
     const result = await exec.getExecOutput(
@@ -68,13 +74,12 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
   }
 
   if (path.basename(versionFile) != "go.mod") {
-    core.setFailed(`version-file is not a go.mod file: ${versionFile}`);
-    return
+    throw new Exception(`version-file is not a go.mod file: ${versionFile}`);
+
   }
 
   if (!fs.existsSync(versionFile)) {
-    core.setFailed(`version-file does not exist: ${versionFile}`);
-    return;
+    throw new Exception(`version-file does not exist: ${versionFile}`);
   }
 
   const result = await exec.getExecOutput(
