@@ -166,7 +166,7 @@ jobs:
           VERSION: ${{ steps.install-version-file.outputs.version }}
 
       - name: Install version-file missing
-        id: install-version-file missing
+        id: install-version-file-missing
         uses: ./
         with:
           package: mvdan.cc/gofumpt
