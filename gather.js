@@ -79,7 +79,7 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
 
   const result = await exec.getExecOutput(
     "go",
-    ["list", "-m", "-json", "all"],
+    ["list", "-mod=readonly", "-m", "-json", "all"],
     { cwd: path.dirname(versionFile) },
   );
   const data = JSON.parse("[" + result.stdout.replaceAll("}\n{", "},\n{") + "]");
