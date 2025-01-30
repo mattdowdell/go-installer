@@ -22,9 +22,10 @@ module.exports = async ({ core, exec, fs, os, path }) => {
   }
 
   const versionFile = process.env.version_file;
+  let versions = new Map();
 
   try {
-    const versions = await parseVersionFile({ core, exec, fs, path, versionFile });
+    versions = await parseVersionFile({ core, exec, fs, path, versionFile });
   } catch(e) {
     core.setFailed(e);
     return;
