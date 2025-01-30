@@ -74,12 +74,12 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
   }
 
   if (path.basename(versionFile) != "go.mod") {
-    throw new Exception(`version-file is not a go.mod file: ${versionFile}`);
+    throw new Error(`version-file is not a go.mod file: ${versionFile}`);
 
   }
 
   if (!fs.existsSync(versionFile)) {
-    throw new Exception(`version-file does not exist: ${versionFile}`);
+    throw new Error(`version-file does not exist: ${versionFile}`);
   }
 
   const result = await exec.getExecOutput(
