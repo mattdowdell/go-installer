@@ -40,7 +40,7 @@ module.exports = async ({ core, exec, fs, os, path }) => {
       }
 
       if (versionFile != "" && !versions.has(pkg)) {
-        core.setFile(`version-file ${versionFile} is missing package: ${pkg}`);
+        core.setFailed(`version-file ${versionFile} is missing package: ${pkg}`);
         return;
       }
 
