@@ -45,14 +45,14 @@ module.exports = async ({ core, exec, fs, os, path }) => {
         continue;
       }
 
-      if (versionFile != "" && !versions.has(pkg)) {
-        core.setFailed(`version-file ${versionFile} is missing package: ${pkg}`);
+      if (versionFile != "" && !versions.has(mod)) {
+        core.setFailed(`version-file ${versionFile} is missing package: ${mod}`);
         return;
       }
 
       let version = data.Versions[data.Versions.length - 1];
-      if (versions.has(pkg)) {
-        version = versions.get(pkg);
+      if (versions.has(mod)) {
+        version = versions.get(mod);
       }
 
       core.setOutput("version", version);
