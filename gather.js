@@ -7,7 +7,7 @@
  * - The version, converting 'latest' to an actual version to support cache invalidation.
  * - The cache key based on the name, version and runner.
  */
-module.exports = async ({ core, exec, fs, os, path }) => {
+module.exports = async ({ core, exec, fs, path }) => {
   const pkg = process.env.package;
 
   const name = getBinName(pkg);
@@ -16,7 +16,7 @@ module.exports = async ({ core, exec, fs, os, path }) => {
   const version = process.env.version;
   if (version != "latest") {
     core.setOutput("version", version);
-    core.setOutput("key", makeKey({ os, name, version }));
+    core.setOutput("key", makeKey({ name, version }));
 
     return;
   }
@@ -57,7 +57,7 @@ module.exports = async ({ core, exec, fs, os, path }) => {
       }
 
       core.setOutput("version", version);
-      core.setOutput("key", makeKey({ os, name, version }));
+      core.setOutput("key", makeKey({ name, version }));
 
       return;
     }
@@ -96,11 +96,11 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
 /**
  * Build the key to use for cache lookups.
  *
- * Ideally, this would use core instead of os, but that requires @actions/core v1.11.0.
+ * Ideally, this would use core instead of process.env, but that requires @actions/core v1.11.0.
  * actions/github-script@v7.0.1 provides @actions/core v1.10.1, which does provide this info.
  */
-function makeKey({ os, name, version }) {
-  return ["go-installer", os.platform(), os.arch(), name, version].join("-");
+function makeKey({ name, version }) {
+  return ["go-installer", process.env.RUNNER_OS, process.env.RUNNER_ARCH, name, version].join("-");
 }
 
 /**

@@ -39,13 +39,12 @@ runs:
       with:
         script: |
           const fs = require('fs');
-          const os = require('os');
           const path = require('path');
 
           console.log(process.env);
 
           const script = require(path.join(process.env.GITHUB_ACTION_PATH, 'gather.js'));
-          await script({ core, exec, fs, os, path });
+          await script({ core, exec, fs, path });
       env:
         package: ${{ inputs.package }}
         version: ${{ inputs.version }}
