@@ -26,7 +26,7 @@ module.exports = async ({ core, exec, fs, path }) => {
 
   try {
     versions = await parseVersionFile({ core, exec, fs, path, versionFile });
-  } catch(e) {
+  } catch (e) {
     core.setFailed(e);
     return;
   }
@@ -47,7 +47,9 @@ module.exports = async ({ core, exec, fs, path }) => {
       }
 
       if (versionFile != "" && !versions.has(mod)) {
-        core.setFailed(`version-file ${versionFile} is missing package: ${mod}`);
+        core.setFailed(
+          `version-file ${versionFile} is missing package: ${mod}`,
+        );
         return;
       }
 
@@ -76,7 +78,6 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
 
   if (path.basename(versionFile) != "go.mod") {
     throw new Error(`version-file is not a go.mod file: ${versionFile}`);
-
   }
 
   if (!fs.existsSync(versionFile)) {
@@ -88,9 +89,11 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
     ["list", "-mod=readonly", "-m", "-json", "all"],
     { cwd: path.dirname(versionFile) },
   );
-  const data = JSON.parse("[" + result.stdout.replaceAll("}\n{", "},\n{") + "]");
+  const data = JSON.parse(
+    "[" + result.stdout.replaceAll("}\n{", "},\n{") + "]",
+  );
 
-  return new Map(data.map(d => [d.Path, d.Version]));
+  return new Map(data.map((d) => [d.Path, d.Version]));
 }
 
 /**
@@ -100,7 +103,13 @@ async function parseVersionFile({ core, exec, fs, path, versionFile }) {
  * actions/github-script@v7.0.1 provides @actions/core v1.10.1, which does provide this info.
  */
 function makeKey({ name, version }) {
-  return ["go-installer", process.env.RUNNER_OS, process.env.RUNNER_ARCH, name, version].join("-");
+  return [
+    "go-installer",
+    process.env.RUNNER_OS,
+    process.env.RUNNER_ARCH,
+    name,
+    version,
+  ].join("-");
 }
 
 /**
