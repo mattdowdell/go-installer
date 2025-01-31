@@ -44,7 +44,7 @@ runs:
 
           console.log(process.env);
 
-          const script = require(path.join('${{ github.action_path }}', 'gather.js');
+          const script = require(path.join('${{ github.action_path }}', 'gather.js'));
           await script({ core, exec, fs, os, path });
       env:
         package: ${{ inputs.package }}
@@ -65,7 +65,7 @@ runs:
         script: |
           const path = require('path');
 
-          const script = require(path.join('${{ github.action_path }}', 'install.js');
+          const script = require(path.join('${{ github.action_path }}', 'install.js'));
           await script({ exec });
       env:
         package: ${{ inputs.package }}
