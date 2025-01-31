@@ -41,8 +41,6 @@ runs:
           const fs = require('fs');
           const path = require('path');
 
-          console.log(process.env);
-
           const script = require(path.join(process.env.GITHUB_ACTION_PATH, 'gather.js'));
           await script({ core, exec, fs, path });
       env:
