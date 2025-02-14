@@ -23,7 +23,7 @@ module.exports = async ({ core, exec, glob, path }) => {
 
   const versionFile = process.env.version_file;
   if (versionFile != "") {
-    await parseVersionFile({ core, glob, path, versionFile });
+    await handleVersionFile({ core, glob, name, path, versionFile });
     return;
   }
 
@@ -65,10 +65,10 @@ function handleVersion({ core, name, version }) {
 /**
  * Set outputs for when a version file (go.mod) is used.
  */
-async function handleVersionFile({ core, glob, path, versionFile }) {
+async function handleVersionFile({ core, glob, name, path, versionFile }) {
   if (path.basename(versionFile) != "go.mod") {
     core.setFailed(`version-file is not a go.mod file: ${versionFile}`);
-    return
+    return;
   }
 
   const hash = await glob.hashFiles(versionFile);
