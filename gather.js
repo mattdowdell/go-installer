@@ -1,13 +1,12 @@
 /*global module, process*/
 
 /**
- * Gathers 3 pieces of information:
+ * Gathers various pieces of information:
  *
  * - The binary name from the package path.
  * - The version, converting 'latest' to an actual version to support cache invalidation.
- * - The cache key based on the name, version and runner.
- *
- * TODO: rewrite
+ * - The cache key based on the name, runner and a representation of the version.
+ * - The directory to run the 'go install' command from.
  */
 module.exports = async ({ core, exec, glob, path }) => {
   const pkg = process.env.package;
@@ -71,6 +70,7 @@ async function handleVersionFile({ core, glob, name, path, versionFile }) {
     return;
   }
 
+  // use a hash so that updating any dependency update invalidates the cache
   const hash = await glob.hashFiles(versionFile);
 
   core.setOutput("dir", path.dirname(versionFile));
