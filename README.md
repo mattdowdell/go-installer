@@ -79,4 +79,6 @@ solution, e.g. [Dependabot] or [Renovate].
 | `version` | String | The installed version.                           |
 
 If the `version` input was latest, it will be the actual version that was
-installed. Otherwise it will be identical to the `version` input.
+installed. Otherwise it will be identical to the `version` input. This also
+includes when `version-file` is used in which case the `version` output will be
+unset.
