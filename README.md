@@ -17,19 +17,19 @@ jobs:
         uses: actions/setup-go@v5
 
       - name: Install latest tool
-        uses: mattdowdell/go-installer@v0.2.0
+        uses: mattdowdell/go-installer@v0.3.0
         with:
           package: github.com/example/some-tool
           # version defaults to latest
 
       - name: Install version of tool
-        uses: mattdowdell/go-installer@v0.2.0
+        uses: mattdowdell/go-installer@v0.3.0
         with:
           package: github.com/example/some-other-tool
           version: v1.0.0
 
       - name: Install version of tool from go.mod
-        uses: mattdowdell/go-installer@v0.2.0
+        uses: mattdowdell/go-installer@v0.3.0
         with:
           package: github.com/example/another-tool
           version-file: go.mod
