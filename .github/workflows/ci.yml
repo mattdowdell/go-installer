@@ -156,7 +156,7 @@ jobs:
             exit 1
           fi
 
-          if [ -z "${VERSION}" ]; then
+          if [ -n "${VERSION}" ]; then
             echo "::error version is non-empty"
             exit 1
           fi
