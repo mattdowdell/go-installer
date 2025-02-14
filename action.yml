@@ -64,5 +64,6 @@ runs:
           const script = require(path.join(process.env.GITHUB_ACTION_PATH, 'install.js'));
           await script({ exec });
       env:
+        dir: ${{ steps.gather.outputs.dir }}
         package: ${{ inputs.package }}
         version: ${{ steps.gather.outputs.version }}

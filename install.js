@@ -3,7 +3,7 @@
 /**
  * Installs a Go binary at an optional version.
  *
- * If the version is unset, it is assumed that the version is
+ * The version is only expected to be unset when a go.mod file is used.
  */
 module.exports = async ({ dir, exec }) => {
   const pkg = process.env.package;
