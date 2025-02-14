@@ -5,7 +5,8 @@
  *
  * The version is only expected to be unset when a go.mod file is used.
  */
-module.exports = async ({ dir, exec }) => {
+module.exports = async ({ exec }) => {
+  const dir = process.env.dir;
   const pkg = process.env.package;
   const version = process.env.version;
 
