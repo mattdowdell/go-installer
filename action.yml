@@ -22,7 +22,7 @@ inputs:
 outputs:
   cached:
     description: 'Whether the binary was installed from the cache.'
-    value: ${{ steps.cache.outputs.cache-hit }}
+    value: ${{ steps.cache.outputs.cache-hit == 'true' }}
   name:
     description: 'The name of the installed binary.'
     value: ${{ steps.gather.outputs.name }}
@@ -38,11 +38,10 @@ runs:
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         script: |
-          const fs = require('fs');
           const path = require('path');
 
           const script = require(path.join(process.env.GITHUB_ACTION_PATH, 'gather.js'));
-          await script({ core, exec, fs, path });
+          await script({ core, exec, glob, path });
       env:
         package: ${{ inputs.package }}
         version: ${{ inputs.version }}
@@ -65,5 +64,6 @@ runs:
           const script = require(path.join(process.env.GITHUB_ACTION_PATH, 'install.js'));
           await script({ exec });
       env:
+        dir: ${{ steps.gather.outputs.dir }}
         package: ${{ inputs.package }}
         version: ${{ steps.gather.outputs.version }}

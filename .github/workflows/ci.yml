@@ -156,8 +156,8 @@ jobs:
             exit 1
           fi
 
-          if [ "${VERSION}" != "v0.13.4" ]; then
-            echo "::error version != 'v0.13.4'"
+          if [ -n "${VERSION}" ]; then
+            echo "::error version is non-empty"
             exit 1
           fi
         env:
