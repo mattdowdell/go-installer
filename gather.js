@@ -42,17 +42,7 @@ module.exports = async ({ core, exec, glob, path }) => {
         continue;
       }
 
-      if (versionFile != "" && !versions.has(mod)) {
-        core.setFailed(
-          `version-file ${versionFile} is missing package: ${mod}`,
-        );
-        return;
-      }
-
       let version = data.Versions[data.Versions.length - 1];
-      if (versions.has(mod)) {
-        version = versions.get(mod);
-      }
 
       core.setOutput("version", version);
       core.setOutput("key", makeKey(name, version));
@@ -73,7 +63,7 @@ function handleVersion({ core, name, version }) {
 }
 
 /**
- * Set outputs for when a
+ * Set outputs for when a version file (go.mod) is used.
  */
 async function handleVersionFile({ core, glob, path, versionFile }) {
   if (path.basename(versionFile) != "go.mod") {
@@ -81,9 +71,9 @@ async function handleVersionFile({ core, glob, path, versionFile }) {
     return
   }
 
-  core.setOutput("dir", path.dirname(versionFile));
-
   const hash = await glob.hashFiles(versionFile);
+
+  core.setOutput("dir", path.dirname(versionFile));
   core.setOutput("key", makeKey(name, hash));
 }
 
