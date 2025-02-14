@@ -1,11 +1,18 @@
 /*global module, process*/
 
 /**
- * Installs a Go binary at the selected version.
+ * Installs a Go binary at an optional version.
+ *
+ * If the version is unset, it is assumed that the version is
  */
-module.exports = async ({ exec }) => {
+module.exports = async ({ dir, exec }) => {
   const pkg = process.env.package;
   const version = process.env.version;
 
-  await exec.exec("go", ["install", `${pkg}@${version}`]);
+  let path = pkg;
+  if (version != "") {
+    path = `${pkg}@${version}`;
+  }
+
+  await exec.exec("go", ["install", path], { cwd: dir });
 };

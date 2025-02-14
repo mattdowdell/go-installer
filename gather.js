@@ -6,8 +6,10 @@
  * - The binary name from the package path.
  * - The version, converting 'latest' to an actual version to support cache invalidation.
  * - The cache key based on the name, version and runner.
+ *
+ * TODO: rewrite
  */
-module.exports = async ({ core, exec, fs, path }) => {
+module.exports = async ({ core, exec, glob, path }) => {
   const pkg = process.env.package;
 
   const name = getBinName(pkg);
@@ -15,19 +17,13 @@ module.exports = async ({ core, exec, fs, path }) => {
 
   const version = process.env.version;
   if (version != "latest") {
-    core.setOutput("version", version);
-    core.setOutput("key", makeKey({ name, version }));
-
+    handleVersion({ core, name, version });
     return;
   }
 
   const versionFile = process.env.version_file;
-  let versions;
-
-  try {
-    versions = await parseVersionFile({ core, exec, fs, path, versionFile });
-  } catch (e) {
-    core.setFailed(e);
+  if (versionFile != "") {
+    await parseVersionFile({ core, glob, path, versionFile });
     return;
   }
 
@@ -59,7 +55,7 @@ module.exports = async ({ core, exec, fs, path }) => {
       }
 
       core.setOutput("version", version);
-      core.setOutput("key", makeKey({ name, version }));
+      core.setOutput("key", makeKey(name, version));
 
       return;
     }
@@ -69,46 +65,41 @@ module.exports = async ({ core, exec, fs, path }) => {
 };
 
 /**
- * parseVersionFile converts a go.mod file to a map of Go modules and versions.
+ * Set outputs for when a specific version has been requested.
  */
-async function parseVersionFile({ core, exec, fs, path, versionFile }) {
-  if (versionFile == "") {
-    return new Map();
-  }
+function handleVersion({ core, name, version }) {
+  core.setOutput("version", version);
+  core.setOutput("key", makeKey(name, version));
+}
 
+/**
+ * Set outputs for when a
+ */
+async function handleVersionFile({ core, glob, path, versionFile }) {
   if (path.basename(versionFile) != "go.mod") {
-    throw new Error(`version-file is not a go.mod file: ${versionFile}`);
+    core.setFailed(`version-file is not a go.mod file: ${versionFile}`);
+    return
   }
 
-  if (!fs.existsSync(versionFile)) {
-    throw new Error(`version-file does not exist: ${versionFile}`);
-  }
+  core.setOutput("dir", path.dirname(versionFile));
 
-  const result = await exec.getExecOutput(
-    "go",
-    ["list", "-mod=readonly", "-m", "-json", "all"],
-    { cwd: path.dirname(versionFile) },
-  );
-  const data = JSON.parse(
-    "[" + result.stdout.replaceAll("}\n{", "},\n{") + "]",
-  );
-
-  return new Map(data.map((d) => [d.Path, d.Version]));
+  const hash = await glob.hashFiles(versionFile);
+  core.setOutput("key", makeKey(name, hash));
 }
 
 /**
  * Build the key to use for cache lookups.
  *
  * Ideally, this would use core instead of process.env, but that requires @actions/core v1.11.0.
- * actions/github-script@v7.0.1 provides @actions/core v1.10.1, which does provide this info.
+ * actions/github-script@v7.0.1 provides @actions/core v1.10.1, which does not provide this info.
  */
-function makeKey({ name, version }) {
+function makeKey(name, suffix) {
   return [
     "go-installer",
     process.env.RUNNER_OS,
     process.env.RUNNER_ARCH,
     name,
-    version,
+    suffix,
   ].join("-");
 }
 
