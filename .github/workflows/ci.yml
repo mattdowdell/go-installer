@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
 
       - name: Size
-        uses: mattdowdell/pr-sizer@e2dc7d60097f6b6d6d6f895a1ef31248096f282c # v0.2.0
+        uses: mattdowdell/pr-sizer@e523aba6b9ee5306cd9c69cb08fd59a893e399ca # v0.3.0
 
   install:
     name: Install
